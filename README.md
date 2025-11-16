@@ -73,7 +73,7 @@ Provides a safe fallback answer when inference is not possible
 
 While building this question-answering system, I explored several possible approaches and refined the design based on what worked best for the dataset.
 
-### 1. Rule-Based Question Classification  
+# 1. Rule-Based Question Classification  
 I first designed the system to detect the type of question:
 - **“When” questions** → require temporal parsing  
 - **“How many” questions** → require ownership + numeric inference  
@@ -81,7 +81,7 @@ I first designed the system to detect the type of question:
 
 This rule-based classification kept the logic simple, predictable, and easy to debug.
 
-### 2. Fetching Messages with Pagination  
+# 2. Fetching Messages with Pagination  
 The `/messages` endpoint provides paginated data, so I implemented:
 - Automatic pagination (`skip` + `limit`)
 - Retry logic for occasional 404s
@@ -89,7 +89,7 @@ The `/messages` endpoint provides paginated data, so I implemented:
 
 This ensured robustness even with thousands of messages.
 
-### 3. User Detection Using Token Overlap  
+# 3. User Detection Using Token Overlap  
 To identify which member the question is about, I used:
 - Token normalization  
 - Stemming  
@@ -97,7 +97,7 @@ To identify which member the question is about, I used:
 
 This avoided ambiguity when multiple users appear in the dataset.
 
-### 4. Temporal Resolution for “When” Questions  
+# 4. Temporal Resolution for “When” Questions  
 We used:
 - `dateparser.search_dates`  
 - The message timestamp as the reference point  
