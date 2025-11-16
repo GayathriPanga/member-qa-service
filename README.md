@@ -99,12 +99,13 @@ These patterns shaped my QA logic and helped ensure that the system answers accu
 
 
 ## 📦 Running Locally
-pip install -r requirements.txt
-uvicorn app:app --reload
+`pip install -r requirements.txt`
+
+`uvicorn app:app --reload`
 
 
 Swagger UI will be available at:
-http://localhost:8000/docs
+`http://localhost:8000/docs`
 
 
 ## 📁 Repository
