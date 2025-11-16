@@ -4,5 +4,4 @@ requests
 dateparser
 pydantic
 scikit-learn
-dateparser
 nltk
