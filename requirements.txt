@@ -5,3 +5,4 @@ dateparser
 pydantic
 scikit-learn
 nltk
+numpy
