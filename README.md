@@ -82,15 +82,20 @@ Rule-based NLP + TF-IDF (chosen approach) — simple, deterministic, and explain
 
 ## 📊 Bonus 2: Data Insights
 
-Insights observed during analysis of the dataset:
+While exploring the `/messages` API, I noticed a few patterns in the dataset:
 
-Some users mention numbers unrelated to ownership (e.g., durations).
+1. **Members have many messages across different categories**, such as travel plans, hotel requests, restaurant bookings, billing issues, and profile updates. Each member is identified consistently by a `user_id` and `user_name`.
 
-Temporal expressions such as “next Monday” rely heavily on timestamps for correct interpretation.
+2. **Messages contain a lot of natural-language variability**—including dates (“next Friday”, “tomorrow”), numbers (party sizes, dates, phone numbers), and personal preferences. This required careful handling so my system doesn’t misinterpret phone numbers or dates as counts.
 
-Multiple conflicting statements exist for some users.
+3. **Temporal expressions are often relative**, so for “when” questions I needed to resolve phrases like “next Monday” using the message’s timestamp.
 
-Message styles and formats vary significantly.
+4. **Ownership is not always explicit**, so for “how many” questions I only infer counts when a message clearly contains ownership words like “my”, “I have”, or “I own”.
+
+5. **Plural entities appear frequently**, which I use to answer list-style questions by collecting relevant statements directly from the member’s message history.
+
+These patterns shaped my QA logic and helped ensure that the system answers accurately and safely when information is available, and responds with a fallback message when it isn’t.
+
 
 
 ## 📦 Running Locally
