@@ -14,14 +14,13 @@ COPY requirements.txt .
 # Install Python deps
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Download NLTK data required by PorterStemmer
+RUN python3 -m nltk.downloader punkt
+
 # Copy application files
 COPY . .
 
-# Cloud Run injects PORT environment variable
 ENV PORT=8080
-
-# Expose port (not required but good practice)
 EXPOSE 8080
 
-# Start the FastAPI app with uvicorn
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
