@@ -71,13 +71,65 @@ Provides a safe fallback answer when inference is not possible
 
 ## 📝 Bonus 1: Design Notes (Summary)
 
-Several approaches were considered for building this system:
+While building this question-answering system, I explored several possible approaches and refined the design based on what worked best for the dataset.
 
-Fine-tuned LLM
+### 1. Rule-Based Question Classification  
+I first designed the system to detect the type of question:
+- **“When” questions** → require temporal parsing  
+- **“How many” questions** → require ownership + numeric inference  
+- **List / “What are” questions** → require finding plural entities  
 
-Vector embeddings + semantic search
+This rule-based classification kept the logic simple, predictable, and easy to debug.
 
-Rule-based NLP + TF-IDF (chosen approach) — simple, deterministic, and explainable.
+### 2. Fetching Messages with Pagination  
+The `/messages` endpoint provides paginated data, so I implemented:
+- Automatic pagination (`skip` + `limit`)
+- Retry logic for occasional 404s
+- Caps to avoid over-fetching
+
+This ensured robustness even with thousands of messages.
+
+### 3. User Detection Using Token Overlap  
+To identify which member the question is about, I used:
+- Token normalization  
+- Stemming  
+- Overlap scoring between the question and user names  
+
+This avoided ambiguity when multiple users appear in the dataset.
+
+### 4. Temporal Resolution for “When” Questions  
+We used:
+- `dateparser.search_dates`  
+- The message timestamp as the reference point  
+- TF-IDF + keyword scoring to choose the most relevant message  
+
+This allowed the system to interpret phrases like “next Friday” correctly based on when the member sent the message.
+
+### 5. Ownership & Count Logic  
+For “How many” questions, we tested:
+- Detecting ownership patterns (“my”, “I have”, “I bought”, etc.)
+- Extracting numeric values  
+- Handling contradictions by using the most recent message  
+- Auto-learning synonyms from the user’s own message patterns  
+
+This made the count inference more accurate.
+
+### 6. List-Style Question Extraction  
+We added logic to:
+- Detect plural nouns from the question  
+- Pull all messages mentioning those plural entities  
+- Return a simple list of relevant statements  
+
+### 7. Deployment Approaches Explored  
+We tried multiple deployment paths:
+- **Render** (initial attempt)
+- **Final deployment** via **Google Cloud Run** with a Dockerfile
+
+Google Cloud Run was chosen because it supports container-based deployment, scales automatically, and integrates cleanly with GitHub.
+
+---
+
+These approaches were selected to keep the system simple but reliable, while handling natural-language variability in the member messages.
 
 
 ## 📊 Bonus 2: Data Insights
